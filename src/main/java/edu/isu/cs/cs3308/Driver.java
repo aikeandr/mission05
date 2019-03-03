@@ -1,10 +1,11 @@
 package edu.isu.cs.cs3308;
 
-import edu.isu.cs.cs3308.algorithms.ArraySearch;
-import edu.isu.cs.cs3308.algorithms.impl.BinarySearch;
-import edu.isu.cs.cs3308.algorithms.impl.LinearSearch;
-import edu.isu.cs.cs3308.algorithms.impl.RecursiveBinarySearch;
-import edu.isu.cs.cs3308.algorithms.impl.RecursiveLinearSearch;
+
+import edu.isu.cs.cs3308.algorithms.BinarySearch;
+import edu.isu.cs.cs3308.algorithms.LinearSearch;
+import edu.isu.cs.cs3308.algorithms.RecursiveBinarySearch;
+import edu.isu.cs.cs3308.algorithms.RecursiveLinearSearch;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -16,14 +17,39 @@ import java.util.Random;
 
 /**
  * Driver class for the experimental simulator.
+ *
  * @author Isaac Griffith
+ * @author Andrew Aikens
  */
 public class Driver {
 
     public static void main(String args[]) {
+
+        int initialSize = 2000;
+        int increment = 1000;
+        int numOfIncrements = 10;
+        int iterations = 5000;
+
         // do the simulation using generateRandomArray()
+        Simulation linearSearch = new Simulation(new LinearSearch(), numOfIncrements, iterations);
+        for (int i = 0; i < numOfIncrements; i++)
+            linearSearch.simulate(generateRandomArray(initialSize + (increment * i)), i);
+
+        Simulation recursiveLinearSearch = new Simulation(new RecursiveLinearSearch(), numOfIncrements, iterations);
+        for (int i = 0; i < numOfIncrements; i++)
+            recursiveLinearSearch.simulate(generateRandomArray(initialSize + (increment * i)), i);
+
+        Simulation binarySearch = new Simulation(new BinarySearch(), numOfIncrements, iterations);
+        for (int i = 0; i < numOfIncrements; i++)
+            binarySearch.simulate(generateRandomArray(initialSize + (increment * i)), i);
+
+        Simulation recursiveBinarySearch = new Simulation(new RecursiveBinarySearch(), numOfIncrements, iterations);
+        for (int i = 0; i < numOfIncrements; i++)
+            recursiveBinarySearch.simulate(generateRandomArray(initialSize + (increment * i)), i);
 
         // report the results using report;
+        report(linearSearch.averageTime(), recursiveLinearSearch.averageTime(),
+                binarySearch.averageTime(), recursiveBinarySearch.averageTime(), initialSize, increment);
     }
 
     /**
@@ -39,7 +65,7 @@ public class Driver {
         Integer[] array = new Integer[size];
 
         for (int i = 0; i < size; i++) {
-            array[i] = rand.nextInt(2000);
+            array[i] = rand.nextInt(size);
         }
 
         Arrays.sort(array);
